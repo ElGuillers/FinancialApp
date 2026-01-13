@@ -12,6 +12,7 @@ const Goals = () => {
     const [showForm, setShowForm] = useState(false);
     const [description, setDescription] = useState('');
     const [targetAmount, setTargetAmount] = useState('');
+    const [initialAmount, setInitialAmount] = useState('');
     const [editAmount, setEditAmount] = useState('');
     const [expandedGoalId, setExpandedGoalId] = useState(null);
     const [transactionAmount, setTransactionAmount] = useState('');
@@ -23,11 +24,13 @@ const Goals = () => {
             type: 'ADD_GOAL',
             payload: {
                 description,
-                targetAmount: Number(targetAmount)
+                targetAmount: Number(targetAmount),
+                currentAmount: Number(initialAmount) || 0
             }
         });
         setDescription('');
         setTargetAmount('');
+        setInitialAmount('');
         setShowForm(false);
     };
 

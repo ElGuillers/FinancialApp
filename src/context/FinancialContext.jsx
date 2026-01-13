@@ -28,7 +28,7 @@ const reducer = (state, action) => {
             newState = { ...state, debts: state.debts.filter(item => item.id !== action.payload) };
             break;
         case 'ADD_GOAL':
-            newState = { ...state, goals: [...state.goals, { ...action.payload, currentAmount: 0, id: Date.now() }] };
+            newState = { ...state, goals: [...state.goals, { currentAmount: 0, ...action.payload, id: Date.now() }] };
             break;
         case 'UPDATE_GOAL_PROGRESS':
             newState = {
