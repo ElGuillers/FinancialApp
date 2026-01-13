@@ -22,9 +22,10 @@ const BottomNav = ({ currentView, setView }) => {
             display: 'flex',
             justifyContent: 'space-around',
             padding: '12px 0 calc(24px + env(safe-area-inset-bottom))', // Safe area support
-            zIndex: 100,
+            zIndex: 9999,
             maxWidth: '480px', // Match app container
             margin: '0 auto', // Center if desktop
+            boxShadow: '0 -4px 20px rgba(0,0,0,0.5)', // Better separation
         }}>
             {navItems.map((item) => {
                 const isActive = currentView === item.id;
@@ -42,6 +43,9 @@ const BottomNav = ({ currentView, setView }) => {
                             fontSize: '0.75rem',
                             gap: '4px',
                             transition: 'color 0.2s',
+                            width: '64px', // Ensure wide touch target
+                            height: '100%',
+                            justifyContent: 'center',
                         }}
                     >
                         <Icon size={24} />

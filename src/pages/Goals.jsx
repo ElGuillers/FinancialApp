@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useFinancial } from '../context/FinancialContext';
 import Card from '../components/Card';
 import Input from '../components/Input';
+import CurrencyInput from '../components/CurrencyInput';
 import Button from '../components/Button';
 import { Plus, Trash2, TrendingUp, Check, ChevronDown, ChevronUp, Minus, Sparkles } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
@@ -75,16 +76,21 @@ const Goals = () => {
                                 onChange={e => setDescription(e.target.value)}
                                 placeholder="Ej. Viaje a Europa"
                             />
-                            <Input
-                                label="Monto Objetivo"
-                                type="number"
+                            <CurrencyInput
+                                label="Monto Meta"
                                 value={targetAmount}
                                 onChange={e => setTargetAmount(e.target.value)}
-                                placeholder="0.00"
+                                placeholder="0"
+                            />
+                            <CurrencyInput
+                                label="Monto Inicial (Opcional)"
+                                value={initialAmount}
+                                onChange={e => setInitialAmount(e.target.value)}
+                                placeholder="0"
                             />
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <Button type="button" onClick={() => setShowForm(false)} style={{ background: 'rgba(255,255,255,0.1)' }}>Cancelar</Button>
-                                <Button type="submit" style={{ background: 'var(--accent-gold)', color: 'black' }}>Guardar Meta</Button>
+                                <Button type="submit" style={{ background: 'var(--accent-gold)', color: 'black' }}>Crear Sueño</Button>
                             </div>
                         </div>
                     </form>
@@ -123,12 +129,12 @@ const Goals = () => {
 
                             {expandedGoalId === item.id && (
                                 <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', animation: 'fadeIn 0.3s' }}>
-                                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '12px' }}>
-                                        <Input
-                                            type="number"
-                                            placeholder="Monto..."
+                                    <div style={{ marginBottom: '16px' }}>
+                                        <CurrencyInput
+                                            label="Monto"
                                             value={transactionAmount}
                                             onChange={e => setTransactionAmount(e.target.value)}
+                                            placeholder="0"
                                             style={{ marginBottom: 0 }}
                                         />
                                     </div>

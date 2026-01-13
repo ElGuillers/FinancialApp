@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useFinancial } from '../context/FinancialContext';
 import Card from '../components/Card';
 import Input, { Select } from '../components/Input';
+import CurrencyInput from '../components/CurrencyInput';
 import Button from '../components/Button';
 import { Plus, Trash2 } from 'lucide-react';
 import { formatCurrency } from '../utils/formatters';
@@ -43,9 +44,9 @@ const Income = () => {
                             onChange={e => setFormData({ ...formData, description: e.target.value })}
                             placeholder="Ej. Salario"
                         />
-                        <Input
+
+                        <CurrencyInput
                             label="Monto"
-                            type="number"
                             value={formData.amount}
                             onChange={e => setFormData({ ...formData, amount: e.target.value })}
                             placeholder="0"

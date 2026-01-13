@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useFinancial } from '../context/FinancialContext';
 import Card from '../components/Card';
 import Input from '../components/Input';
+import CurrencyInput from '../components/CurrencyInput';
 import Button from '../components/Button';
 import { Plus, Trash2, Calendar } from 'lucide-react';
 import { formatCurrency, formatDate } from '../utils/formatters';
@@ -44,15 +45,16 @@ const Debts = () => {
                             onChange={e => setFormData({ ...formData, description: e.target.value })}
                             placeholder="Ej. Tarjeta de Crédito"
                         />
-                        <Input
+
+                        <CurrencyInput
                             label="Monto a pagar"
-                            type="number"
                             value={formData.amount}
                             onChange={e => setFormData({ ...formData, amount: e.target.value })}
                             placeholder="0"
                         />
                         <Input
                             label="Fecha de Corte"
+                            type="date"
                             value={formData.cutoffDate}
                             onChange={e => setFormData({ ...formData, cutoffDate: e.target.value })}
                         />
