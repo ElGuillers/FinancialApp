@@ -2,6 +2,7 @@ import React from 'react';
 import { useFinancial } from '../context/FinancialContext';
 import Card from '../components/Card';
 import AnalysisCard from '../components/AnalysisCard';
+import FinancialChart from '../components/FinancialChart';
 import { formatCurrency } from '../utils/formatters';
 
 const Dashboard = () => {
@@ -9,7 +10,7 @@ const Dashboard = () => {
     const netBalance = totalIncome - totalDebt - totalSavings;
 
     return (
-        <div style={{ paddingBottom: '80px' }}>
+        <div style={{ paddingBottom: '100px' }}>
             <header style={{ marginBottom: '24px' }}>
                 <h1 style={{ fontSize: '1.5rem' }}>Hola, Soñador</h1>
                 <p style={{ color: 'var(--text-secondary)' }}>Tu resumen financiero</p>
@@ -33,6 +34,10 @@ const Dashboard = () => {
                         <div style={{ color: 'var(--accent-gold)', fontWeight: '600' }}>-{formatCurrency(totalSavings)}</div>
                     </div>
                 </div>
+            </Card>
+
+            <Card title="Distribución Financiera">
+                <FinancialChart totalDebt={totalDebt} totalSavings={totalSavings} netBalance={netBalance} />
             </Card>
 
             <AnalysisCard monthlyIncome={totalIncome} totalDebt={totalDebt} />

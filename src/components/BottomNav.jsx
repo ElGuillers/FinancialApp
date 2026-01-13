@@ -21,7 +21,7 @@ const BottomNav = ({ currentView, setView }) => {
             borderTop: '1px solid rgba(255, 255, 255, 0.1)',
             display: 'flex',
             justifyContent: 'space-around',
-            padding: '12px 0 24px', // Extra padding for safe area
+            padding: '12px 0 calc(24px + env(safe-area-inset-bottom))', // Safe area support
             zIndex: 100,
             maxWidth: '480px', // Match app container
             margin: '0 auto', // Center if desktop

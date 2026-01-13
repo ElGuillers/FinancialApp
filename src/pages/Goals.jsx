@@ -57,7 +57,7 @@ const Goals = () => {
     };
 
     return (
-        <div style={{ paddingBottom: '80px' }}>
+        <div style={{ paddingBottom: '100px' }}>
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                 <h1>Sueños</h1>
                 <button onClick={() => setShowForm(!showForm)} className="btn-icon-filled" style={{ background: 'var(--accent-gold)', color: 'black' }}>
