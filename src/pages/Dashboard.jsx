@@ -44,25 +44,31 @@ const Dashboard = () => {
 
             <h2 style={{ fontSize: '1.1rem', marginBottom: '16px' }}>Tus Metas</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {state.goals.length === 0 ? (
-                    <p style={{ color: 'var(--text-secondary)', fontStyle: 'italic' }}>Aú no tienes metas. ¡Agrega una!</p>
+                {(state.goals || []).length === 0 ? (
+                    <p style={{ color: 'var(--text-secondary)', fontStyle: 'italic' }}>Aún no tienes metas. ¡Agrega una!</p>
                 ) : (
-                    state.goals.slice(0, 3).map(goal => (
-                        <Card key={goal.id}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                <span style={{ fontWeight: '500' }}>{goal.description}</span>
-                                <span style={{ color: 'var(--accent-gold)' }}>{formatCurrency(goal.targetAmount)}</span>
-                            </div>
-                            <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
-                                <div style={{
-                                    width: `${Math.min((goal.currentAmount / goal.targetAmount) * 100, 100)}%`,
-                                    height: '100%',
-                                    background: 'var(--accent-gold)',
-                                    transition: 'width 1s ease'
-                                }} />
-                            </div>
-                        </Card>
-                    ))
+                    state.goals.slice(0, 3).map(goal => {
+                        const target = Number(goal.targetAmount) || 0;
+                        const current = Number(goal.currentAmount) || 0;
+                        const percentage = target > 0 ? Math.min(Math.max(0, (current / target) * 100), 100) : 0;
+
+                        return (
+                            <Card key={goal.id}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                    <span style={{ fontWeight: '500' }}>{goal.description}</span>
+                                    <span style={{ color: 'var(--accent-gold)' }}>{formatCurrency(target)}</span>
+                                </div>
+                                <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                                    <div style={{
+                                        width: `${percentage}%`,
+                                        height: '100%',
+                                        background: 'var(--accent-gold)',
+                                        transition: 'width 1s ease'
+                                    }} />
+                                </div>
+                            </Card>
+                        );
+                    })
                 )}
             </div>
         </div>

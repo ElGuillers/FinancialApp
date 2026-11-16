@@ -49,7 +49,6 @@ body {
 .app-container {
   width: 100%;
   max-width: 480px;
-  /* Mobile first view constraint for desktop */
   margin: 0 auto;
   padding: 20px;
   min-height: 100vh;
@@ -109,13 +108,11 @@ button {
 
 .icon-btn.danger:hover {
   background: rgba(239, 35, 60, 0.15);
-  /* accent-red with opacity */
   color: var(--accent-red);
 }
 
 .icon-btn.success:hover {
   background: rgba(56, 176, 0, 0.15);
-  /* accent-green with opacity */
   color: var(--accent-green);
 }
 
@@ -189,4 +186,34 @@ input::-webkit-inner-spin-button {
 
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+/* Animations */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-down,
+.slide-down {
+  animation: slideDown 0.25s ease-out forwards;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
 }

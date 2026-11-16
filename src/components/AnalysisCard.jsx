@@ -1,7 +1,7 @@
 import React from 'react';
 import Card from './Card';
 import { formatCurrency } from '../utils/formatters';
-import { PieChart, TrendingUp, AlertTriangle, CheckCircle } from 'lucide-react';
+import { TrendingUp, AlertTriangle, CheckCircle } from 'lucide-react';
 
 const AnalysisCard = ({ monthlyIncome, totalDebt }) => {
     // 50/30/20 Rule
@@ -10,7 +10,7 @@ const AnalysisCard = ({ monthlyIncome, totalDebt }) => {
     const savingsTarget = monthlyIncome * 0.20;
 
     // Analysis
-    const debtRatio = (totalDebt / monthlyIncome) * 100;
+    const debtRatio = monthlyIncome > 0 ? (totalDebt / monthlyIncome) * 100 : 0;
     const remainingAfterDebt = monthlyIncome - totalDebt;
 
     // Recommendation Logic
@@ -27,11 +27,6 @@ const AnalysisCard = ({ monthlyIncome, totalDebt }) => {
         recommendation.status = 'danger';
         recommendation.amount = 0;
     } else {
-        // Ideally save 20%, but constrained by debt
-        // If debt takes > 50% (needs), it eats into wants/savings.
-        // Let's suggest: Max(0, Min(SavingsTarget, Remaining - MinimalLivingExpenses?))
-        // Simplifying: Suggest saving up to 20%, but cap at remaining free cash flow.
-
         const maxPossibleSavings = remainingAfterDebt;
         const suggestedSavings = Math.min(savingsTarget, maxPossibleSavings);
 
@@ -87,14 +82,14 @@ const AnalysisCard = ({ monthlyIncome, totalDebt }) => {
                 </div>
 
                 <div style={{ display: 'flex', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
-                    <div style={{ width: '50%', background: 'var(--accent-blue)', opacity: 0.8 }} title="50% Necesidades" />
-                    <div style={{ width: '30%', background: 'var(--accent-purple)', opacity: 0.8 }} title="30% Deseos" />
-                    <div style={{ width: '20%', background: 'var(--accent-gold)' }} title="20% Ahorro" />
+                    <div style={{ width: '50%', background: 'var(--accent-blue)', opacity: 0.8 }} title={`50% Necesidades: ${formatCurrency(needsLimit)}`} />
+                    <div style={{ width: '30%', background: 'var(--accent-purple)', opacity: 0.8 }} title={`30% Deseos: ${formatCurrency(wantsLimit)}`} />
+                    <div style={{ width: '20%', background: 'var(--accent-gold)' }} title={`20% Ahorro: ${formatCurrency(savingsTarget)}`} />
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                    <span>Nec.</span>
-                    <span>Deseos</span>
-                    <span style={{ color: 'var(--accent-gold)' }}>Ahorro</span>
+                    <span>50% Nec. ({formatCurrency(needsLimit)})</span>
+                    <span>30% Deseos ({formatCurrency(wantsLimit)})</span>
+                    <span style={{ color: 'var(--accent-gold)' }}>20% Ahorro ({formatCurrency(savingsTarget)})</span>
                 </div>
             </div>
         </Card>

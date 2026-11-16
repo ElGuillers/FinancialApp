@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer } from 'react';
 
 const FinancialContext = createContext();
 
@@ -8,9 +8,21 @@ const initialState = {
     goals: [],
 };
 
-// Load from local storage
-const localState = JSON.parse(localStorage.getItem('financialData'));
-const startState = localState || initialState;
+const loadInitialState = () => {
+    try {
+        const saved = typeof window !== 'undefined' ? localStorage.getItem('financialData') : null;
+        if (!saved) return initialState;
+        const parsed = JSON.parse(saved);
+        return {
+            income: Array.isArray(parsed?.income) ? parsed.income : [],
+            debts: Array.isArray(parsed?.debts) ? parsed.debts : [],
+            goals: Array.isArray(parsed?.goals) ? parsed.goals : [],
+        };
+    } catch (e) {
+        console.error('Error loading financialData from localStorage:', e);
+        return initialState;
+    }
+};
 
 const reducer = (state, action) => {
     let newState;
@@ -34,7 +46,7 @@ const reducer = (state, action) => {
             newState = {
                 ...state,
                 goals: state.goals.map(goal =>
-                    goal.id === action.payload.id ? { ...goal, currentAmount: Number(action.payload.amount) } : goal
+                    goal.id === action.payload.id ? { ...goal, currentAmount: Math.max(0, Number(action.payload.amount) || 0) } : goal
                 )
             };
             break;
@@ -44,27 +56,36 @@ const reducer = (state, action) => {
         default:
             return state;
     }
-    localStorage.setItem('financialData', JSON.stringify(newState));
+
+    try {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('financialData', JSON.stringify(newState));
+        }
+    } catch (e) {
+        console.error('Error saving financialData to localStorage:', e);
+    }
+
     return newState;
 };
 
 export const FinancialProvider = ({ children }) => {
-    const [state, dispatch] = useReducer(reducer, startState);
+    const [state, dispatch] = useReducer(reducer, null, loadInitialState);
 
     // Calculate totals
-    const totalIncome = state.income.reduce((acc, curr) => {
-        const amount = Number(curr.amount);
+    const totalIncome = (state.income || []).reduce((acc, curr) => {
+        const amount = Number(curr.amount) || 0;
         switch (curr.frequency) {
             case 'daily': return acc + (amount * 30);
             case 'weekly': return acc + (amount * 4);
             case 'biweekly': return acc + (amount * 2);
             case 'semiannual': return acc + (amount / 6);
+            case 'occasional': return acc + amount;
             default: return acc + amount; // monthly
         }
     }, 0);
 
-    const totalDebt = state.debts.reduce((acc, curr) => acc + Number(curr.amount), 0);
-    const totalSavings = state.goals.reduce((acc, curr) => acc + Number(curr.currentAmount), 0);
+    const totalDebt = (state.debts || []).reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
+    const totalSavings = (state.goals || []).reduce((acc, curr) => acc + (Number(curr.currentAmount) || 0), 0);
 
     return (
         <FinancialContext.Provider value={{ state, dispatch, totalIncome, totalDebt, totalSavings }}>

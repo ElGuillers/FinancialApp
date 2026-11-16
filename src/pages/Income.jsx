@@ -14,14 +14,23 @@ const Income = () => {
     const [formData, setFormData] = useState({
         amount: '',
         description: '',
-        frequency: 'monthly', // default
+        frequency: 'monthly',
         categoryId: 'salary',
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!formData.amount || !formData.description) return;
-        dispatch({ type: 'ADD_INCOME', payload: formData });
+        const numAmount = Number(formData.amount);
+        if (!formData.description.trim() || isNaN(numAmount) || numAmount <= 0) return;
+
+        dispatch({
+            type: 'ADD_INCOME',
+            payload: {
+                ...formData,
+                description: formData.description.trim(),
+                amount: numAmount
+            }
+        });
         setFormData({ amount: '', description: '', frequency: 'monthly', categoryId: 'salary' });
         setShowForm(false);
     };
@@ -62,7 +71,6 @@ const Income = () => {
                                 { value: 'monthly', label: 'Mensual' },
                                 { value: 'semiannual', label: 'Prima Semestral' },
                                 { value: 'occasional', label: 'Ocasional / Otros' },
-
                             ]}
                         />
                         <Select
@@ -80,12 +88,13 @@ const Income = () => {
             )}
 
             <div className="income-list">
-                {state.income.length === 0 ? (
+                {(state.income || []).length === 0 ? (
                     <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginTop: '40px' }}>No hay ingresos registrados</p>
                 ) : (
                     state.income.map(item => {
-                        const CategoryIcon = getCategory(item.categoryId || 'salary').icon;
-                        const categoryColor = getCategory(item.categoryId || 'salary').color;
+                        const category = getCategory(item.categoryId || 'salary');
+                        const CategoryIcon = category.icon;
+                        const categoryColor = category.color;
                         return (
                             <Card key={item.id} className="list-item">
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -117,7 +126,7 @@ const Income = () => {
                                     </div>
                                 </div>
                             </Card>
-                        )
+                        );
                     })
                 )}
             </div>

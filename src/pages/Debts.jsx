@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useFinancial } from '../context/FinancialContext';
 import Card from '../components/Card';
-import Input from '../components/Input';
+import Input, { Select } from '../components/Input';
 import CurrencyInput from '../components/CurrencyInput';
 import Button from '../components/Button';
 import { Plus, Trash2, Calendar } from 'lucide-react';
 import { formatCurrency, formatDate } from '../utils/formatters';
 import { CATEGORIES, getCategory } from '../utils/categories';
-import { Select } from '../components/Input';
 
 const Debts = () => {
     const { state, dispatch } = useFinancial();
@@ -21,8 +20,17 @@ const Debts = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!formData.amount || !formData.description) return;
-        dispatch({ type: 'ADD_DEBT', payload: formData });
+        const numAmount = Number(formData.amount);
+        if (!formData.description.trim() || isNaN(numAmount) || numAmount <= 0) return;
+
+        dispatch({
+            type: 'ADD_DEBT',
+            payload: {
+                ...formData,
+                description: formData.description.trim(),
+                amount: numAmount
+            }
+        });
         setFormData({ amount: '', description: '', cutoffDate: '', categoryId: 'shopping' });
         setShowForm(false);
     };
@@ -73,12 +81,13 @@ const Debts = () => {
             )}
 
             <div className="debt-list">
-                {state.debts.length === 0 ? (
+                {(state.debts || []).length === 0 ? (
                     <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginTop: '40px' }}>¡Libre de deudas!</p>
                 ) : (
                     state.debts.map(item => {
-                        const CategoryIcon = getCategory(item.categoryId || 'shopping').icon;
-                        const categoryColor = getCategory(item.categoryId || 'shopping').color;
+                        const category = getCategory(item.categoryId || 'shopping');
+                        const CategoryIcon = category.icon;
+                        const categoryColor = category.color;
                         return (
                             <Card key={item.id} className="list-item">
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -110,7 +119,7 @@ const Debts = () => {
                                     </div>
                                 </div>
                             </Card>
-                        )
+                        );
                     })
                 )}
             </div>
